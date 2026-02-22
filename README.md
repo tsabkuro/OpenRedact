@@ -65,8 +65,6 @@ npm run build
 npm run preview
 ```
 
-## Privacy and Cost Model
-
 ### What this app does
 
 - Processes PDFs in-browser on the user's device.
