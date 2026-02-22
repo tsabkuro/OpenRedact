@@ -77,26 +77,39 @@ export default function PDFJsViewer({ file }: Props) {
                 if (!pageNumber) return;
 
                 const pageBox = pageEl.getBoundingClientRect();
+                const textLayerEl = pageEl.querySelector(".textLayer") as HTMLElement | null;
+                const contentBox = textLayerEl?.getBoundingClientRect() ?? pageBox;
                 const fragmentRects = Array.from(range.getClientRects());
                 if (!fragmentRects.length) return;
 
                 const selectionItems: StoredSelection[] = fragmentRects
-                    .map((frag) => ({
-                        x: frag.left - pageBox.left,
-                        y: frag.top - pageBox.top,
-                        width: frag.width,
-                        height: frag.height,
-                    }))
-                    .filter((rect) => rect.width > 0 && rect.height > 0)
-                    .map((rect) => {
+                    .map((frag) => {
+                        const previewRect: CssPageRect = {
+                            x: frag.left - pageBox.left,
+                            y: frag.top - pageBox.top,
+                            width: frag.width,
+                            height: frag.height,
+                        };
+
+                        const rectForPdf: CssPageRect = {
+                            x: frag.left - contentBox.left,
+                            y: frag.top - contentBox.top,
+                            width: frag.width,
+                            height: frag.height,
+                        };
+
+                        return { previewRect, rectForPdf };
+                    })
+                    .filter(({ previewRect }) => previewRect.width > 0 && previewRect.height > 0)
+                    .map(({ previewRect, rectForPdf }) => {
                         const pdfRect = pdfViewerRef.current
-                            ? toPdfRectFromSelection(pdfViewerRef.current, pageNumber, rect)
+                            ? toPdfRectFromSelection(pdfViewerRef.current, pageNumber, rectForPdf)
                             : null;
 
                         return {
                             pageNumber,
                             text,
-                            previewRect: rect,
+                            previewRect,
                             pdfRect,
                             createdAt: Date.now(),
                         };
