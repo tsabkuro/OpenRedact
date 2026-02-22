@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Tim Sabanshi
+// Full AGPL notice: see NOTICE-AGPL.txt
 import { ChangeEvent, PointerEvent as ReactPointerEvent, useEffect, useRef, useState } from "react";
 import "@/App.css";
 

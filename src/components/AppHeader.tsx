@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Tim Sabanshi
+// Full AGPL notice: see NOTICE-AGPL.txt
 import { FaGithub, FaRegLightbulb } from "react-icons/fa";
 import OpenRedactLogo from "./OpenRedactLogo";
 

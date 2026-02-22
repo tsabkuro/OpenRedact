@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Tim Sabanshi
+// Full AGPL notice: see NOTICE-AGPL.txt
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { pdfjsLib } from "@/lib/pdfjs";

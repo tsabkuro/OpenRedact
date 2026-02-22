@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Tim Sabanshi
+// Full AGPL notice: see NOTICE-AGPL.txt
 import FaqAccordionItem from "./FaqAccordionItem";
 
 type Props = {

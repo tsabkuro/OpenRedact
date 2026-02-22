@@ -1,3 +1,5 @@
+// Copyright (C) 2026 Tim Sabanshi
+// Full AGPL notice: see NOTICE-AGPL.txt
 import { GripVertical } from "lucide-react";
 
 import type { PointerEvent as ReactPointerEvent, RefObject } from "react";
