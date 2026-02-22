@@ -76,30 +76,34 @@ export default function PDFJsViewer({ file }: Props) {
                 const pageNumber = Number(pageEl.getAttribute("data-page-number") || "0");
                 if (!pageNumber) return;
 
-                // One bounding box for the entire selection.
-                const r = range.getBoundingClientRect();
                 const pageBox = pageEl.getBoundingClientRect();
+                const fragmentRects = Array.from(range.getClientRects());
+                if (!fragmentRects.length) return;
 
-                const rect: CssPageRect = {
-                    x: r.left - pageBox.left,
-                    y: r.top - pageBox.top,
-                    width: r.width,
-                    height: r.height,
-                };
+                const selectionItems: StoredSelection[] = fragmentRects
+                    .map((frag) => ({
+                        x: frag.left - pageBox.left,
+                        y: frag.top - pageBox.top,
+                        width: frag.width,
+                        height: frag.height,
+                    }))
+                    .filter((rect) => rect.width > 0 && rect.height > 0)
+                    .map((rect) => {
+                        const pdfRect = pdfViewerRef.current
+                            ? toPdfRectFromSelection(pdfViewerRef.current, pageNumber, rect)
+                            : null;
 
-                const pdfRect = pdfViewerRef.current
-                    ? toPdfRectFromSelection(pdfViewerRef.current, pageNumber, rect)
-                    : null;
+                        return {
+                            pageNumber,
+                            text,
+                            previewRect: rect,
+                            pdfRect,
+                            createdAt: Date.now(),
+                        };
+                    });
 
-                const selectionData: StoredSelection = {
-                    pageNumber,
-                    text,
-                    previewRect: rect,
-                    pdfRect,
-                    createdAt: Date.now(),
-                };
-
-                setStoredSelections((prev) => [...prev, selectionData]);
+                if (!selectionItems.length) return;
+                setStoredSelections((prev) => [...prev, ...selectionItems]);
             });
         };
 
