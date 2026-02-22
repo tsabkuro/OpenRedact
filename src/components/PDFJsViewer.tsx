@@ -17,6 +17,7 @@ import { RedactionTarget } from "@/workers/mupdf.worker";
 type StoredSelection = {
   pageNumber: number; // 1-based
   text: string;
+  previewRect: CssPageRect;
   pdfRect: PdfRect | null;
   createdAt: number;
 };
@@ -31,10 +32,16 @@ export default function PDFJsViewer({ file }: Props) {
     const viewerRef = useRef<HTMLDivElement | null>(null);
     const pdfViewerRef = useRef<PDFViewer | null>(null);
     const isMouseDown = useRef(false);
+    const [activeFile, setActiveFile] = useState<Props["file"]>(file);
     const [storedSelections, setStoredSelections] = useState<StoredSelection[]>([]);
     const [isRedacting, setIsRedacting] = useState(false);
 
     const { isWorkerInitialized, redactPages, loadDocument } = useMupdf();
+
+    useEffect(() => {
+        setActiveFile(file);
+        setStoredSelections([]);
+    }, [file]);
 
     useEffect(() => {
         const container = containerRef.current;
@@ -87,6 +94,7 @@ export default function PDFJsViewer({ file }: Props) {
                 const selectionData: StoredSelection = {
                     pageNumber,
                     text,
+                    previewRect: rect,
                     pdfRect,
                     createdAt: Date.now(),
                 };
@@ -127,7 +135,7 @@ export default function PDFJsViewer({ file }: Props) {
         linkService.setViewer(viewer);
 
         const loadingTask = pdfjsLib.getDocument(
-            typeof file === "string" ? { url: file } : { data: file }
+            typeof activeFile === "string" ? { url: activeFile } : { data: activeFile }
         );
 
         (async () => {
@@ -149,7 +157,7 @@ export default function PDFJsViewer({ file }: Props) {
             loadingTask.destroy();
             if (pdfDoc) pdfDoc.destroy();
         };
-    }, [file]);
+    }, [activeFile]);
 
     useEffect(() => {
         const viewerRoot = viewerRef.current;
@@ -160,7 +168,6 @@ export default function PDFJsViewer({ file }: Props) {
 
         const byPage = new Map<number, StoredSelection[]>();
         for (const selection of storedSelections) {
-            if (!selection.pdfRect) continue;
             if (!byPage.has(selection.pageNumber)) {
                 byPage.set(selection.pageNumber, []);
             }
@@ -185,9 +192,26 @@ export default function PDFJsViewer({ file }: Props) {
                 pageEl.style.position = "relative";
             }
 
+            for (const item of items) {
+                const box = item.previewRect;
+                const rectEl = document.createElement("div");
+                Object.assign(rectEl.style, {
+                    position: "absolute",
+                    left: `${box.x}px`,
+                    top: `${box.y}px`,
+                    width: `${Math.max(1, box.width)}px`,
+                    height: `${Math.max(1, box.height)}px`,
+                    border: "2px solid #ff1a1a",
+                    background: "rgba(255, 26, 26, 0.18)",
+                    boxSizing: "border-box",
+                });
+
+                overlay.appendChild(rectEl);
+            }
+
             pageEl.appendChild(overlay);
         });
-    }, [storedSelections, file]);
+    }, [storedSelections, activeFile]);
 
     useEffect(() => {
         if (!isWorkerInitialized) return;
@@ -210,7 +234,7 @@ export default function PDFJsViewer({ file }: Props) {
         };
 
         const loadIntoMupdf = async () => {
-            const bytes = await toArrayBuffer(file);
+            const bytes = await toArrayBuffer(activeFile);
 
             if (!cancelled) {
                 await loadDocument(bytes);
@@ -222,7 +246,7 @@ export default function PDFJsViewer({ file }: Props) {
         return () => {
             cancelled = true;
         };
-    }, [file, isWorkerInitialized, loadDocument]);
+    }, [activeFile, isWorkerInitialized, loadDocument]);
 
     const redact = async () => {
         const targets: RedactionTarget[] = storedSelections
@@ -237,10 +261,8 @@ export default function PDFJsViewer({ file }: Props) {
         setIsRedacting(true);
         try {
             const redactedBytes = await redactPages(targets);
-            const url = URL.createObjectURL(
-                new Blob([redactedBytes], { type: "application/pdf" })
-            );
-            window.open(url, "_blank");
+            setActiveFile(new Uint8Array(redactedBytes));
+            setStoredSelections([]);
         } finally {
             setIsRedacting(false);
         }
@@ -254,7 +276,7 @@ export default function PDFJsViewer({ file }: Props) {
                 </button>
                 {!!storedSelections.length && (
                     <button onClick={() => setStoredSelections([])} disabled={isRedacting}>
-                        Clear Debug Boxes
+                        Clear Selections
                     </button>
                 )}
             </div>
