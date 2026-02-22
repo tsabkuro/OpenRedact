@@ -35,6 +35,7 @@ export default function PDFJsViewer({ file }: Props) {
     const [activeFile, setActiveFile] = useState<Props["file"]>(file);
     const [storedSelections, setStoredSelections] = useState<StoredSelection[]>([]);
     const [isRedacting, setIsRedacting] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(false);
 
     const { isWorkerInitialized, redactPages, loadDocument } = useMupdf();
 
@@ -42,6 +43,13 @@ export default function PDFJsViewer({ file }: Props) {
         setActiveFile(file);
         setStoredSelections([]);
     }, [file]);
+
+    useEffect(() => {
+        document.body.classList.toggle("theme-dark", isDarkMode);
+        return () => {
+            document.body.classList.remove("theme-dark");
+        };
+    }, [isDarkMode]);
 
     useEffect(() => {
         const container = containerRef.current;
@@ -288,14 +296,26 @@ export default function PDFJsViewer({ file }: Props) {
     return (
         <div className="pdf-shell">
             <div className="pdf-toolbar">
-                <button onClick={redact} disabled={isRedacting || !storedSelections.length}>
+                <button className="btn-secondary" onClick={() => setActiveFile("")} disabled={isRedacting}>
+                    Upload New PDF
+                </button>
+                <button className="btn-primary" onClick={redact} disabled={isRedacting || !storedSelections.length}>
                     {isRedacting ? "Applying..." : "Apply Redactions"}
                 </button>
-                {!!storedSelections.length && (
-                    <button onClick={() => setStoredSelections([])} disabled={isRedacting}>
-                        Clear Selections
-                    </button>
-                )}
+                <button className="btn-ghost" onClick={() => setStoredSelections(storedSelections.slice(0, -1))} disabled={isRedacting || !storedSelections.length}>
+                    Undo Selection
+                </button>
+                <button className="btn-danger" onClick={() => setStoredSelections([])} disabled={isRedacting || !storedSelections.length}>
+                    Clear Selections
+                </button>
+                <button
+                    className="btn-theme"
+                    onClick={() => setIsDarkMode((v) => !v)}
+                    disabled={isRedacting}
+                    aria-pressed={isDarkMode}
+                >
+                    {isDarkMode ? "Light Mode" : "Dark Mode"}
+                </button>
             </div>
 
             <div ref={containerRef} className="pdf-container">

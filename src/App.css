@@ -1,6 +1,10 @@
 #root {
   display: flex;
   justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f5f7fb 0%, #eef2f8 100%);
+  font-family: "Avenir Next", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  transition: background 160ms ease;
 }
 
 #pages {
@@ -34,10 +38,147 @@
 
 .pdf-toolbar {
   position: absolute;
-  top: 3rem;
-  left: 3rem;
+  top: 1.25rem;
+  left: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
   z-index: 10;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 8px;
+  max-width: calc(100% - 2.5rem);
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(20, 31, 56, 0.12);
+  box-shadow:
+    0 10px 30px rgba(16, 24, 40, 0.14),
+    0 2px 8px rgba(16, 24, 40, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 0.625rem;
+  border-radius: 12px;
+}
+
+.pdf-toolbar button {
+  appearance: none;
+  border: 1px solid transparent;
+  background: linear-gradient(180deg, #1f4fd8 0%, #173ea9 100%);
+  color: #ffffff;
+  min-height: 2.25rem;
+  padding: 0.45rem 0.85rem;
   border-radius: 8px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  box-shadow: 0 2px 8px rgba(23, 62, 169, 0.35);
+}
+
+.pdf-toolbar button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(23, 62, 169, 0.4);
+}
+
+.pdf-toolbar button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(23, 62, 169, 0.3);
+}
+
+.pdf-toolbar button:first-child {
+  box-shadow: none;
+}
+
+.pdf-toolbar .btn-primary {
+  background: linear-gradient(180deg, #1f4fd8 0%, #173ea9 100%);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.pdf-toolbar .btn-secondary {
+  background: #ffffff;
+  color: #1f2a44;
+  border-color: rgba(20, 31, 56, 0.2);
+  box-shadow: none;
+}
+
+.pdf-toolbar .btn-ghost {
+  background: #ffffff;
+  color: #33405f;
+  border-color: rgba(20, 31, 56, 0.15);
+  box-shadow: none;
+}
+
+.pdf-toolbar .btn-danger {
+  background: #fff5f5;
+  color: #a32020;
+  border-color: #f0b4b4;
+  box-shadow: none;
+}
+
+.pdf-toolbar .btn-theme {
+  background: #0f172a;
+  color: #f8fafc;
+  border-color: #0f172a;
+  box-shadow: none;
+}
+
+.pdf-toolbar button:disabled {
+  background: #e5e9f2;
+  color: #8a93a8;
+  border-color: #d7ddea;
+  cursor: not-allowed;
+  pointer-events: none;
+  box-shadow: none;
+}
+
+body.theme-dark #root {
+  background: linear-gradient(180deg, #0c1220 0%, #0f172a 100%);
+}
+
+body.theme-dark .pdf-toolbar {
+  background: rgba(17, 24, 39, 0.88);
+  border-color: rgba(148, 163, 184, 0.25);
+  box-shadow:
+    0 10px 30px rgba(2, 6, 23, 0.5),
+    0 2px 8px rgba(2, 6, 23, 0.35);
+}
+
+body.theme-dark .pdf-toolbar .btn-secondary,
+body.theme-dark .pdf-toolbar .btn-ghost {
+  background: #111827;
+  color: #e5e7eb;
+  border-color: rgba(148, 163, 184, 0.35);
+}
+
+body.theme-dark .pdf-toolbar .btn-danger {
+  background: #2a1111;
+  color: #fca5a5;
+  border-color: #7f1d1d;
+}
+
+body.theme-dark .pdf-toolbar .btn-theme {
+  background: #e2e8f0;
+  color: #0f172a;
+  border-color: #e2e8f0;
+}
+
+body.theme-dark .pdf-toolbar button:disabled {
+  background: #2a3346;
+  color: #8c97ad;
+  border-color: #3c475e;
+  box-shadow: none;
+}
+
+@media (max-width: 700px) {
+  .pdf-toolbar {
+    top: 0.75rem;
+    left: 0.75rem;
+    right: 0.75rem;
+    max-width: none;
+  }
+
+  .pdf-toolbar button {
+    flex: 1 1 auto;
+    min-width: 8.75rem;
+  }
 }
