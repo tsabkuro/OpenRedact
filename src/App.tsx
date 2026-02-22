@@ -9,6 +9,7 @@ import AppHeader from "./components/AppHeader";
 type ViewerFile = string | ArrayBuffer;
 const MOBILE_BREAKPOINT = 700;
 const HEADER_HEIGHT = 76;
+const GITHUB_URL = "https://github.com/tsabkuro/TrueLocal";
 
 function removeSuffix(str: string, suffix: string): string {
   if (str.endsWith(suffix)) {
@@ -191,10 +192,10 @@ function App() {
         onChange={onFileChange}
         style={{ display: "none" }}
       />
-      <AppHeader githubUrl="https://github.com/tsabkuro/TrueLocal" />
+      <AppHeader githubUrl={GITHUB_URL} />
 
       {!activeFile ? (
-        <UploadEmptyState onPickPdf={onPickPdf} />
+        <UploadEmptyState onPickPdf={onPickPdf} githubUrl={GITHUB_URL} />
       ) : (
         <>
           <AppToolbar
