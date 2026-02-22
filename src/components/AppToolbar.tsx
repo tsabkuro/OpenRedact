@@ -7,7 +7,7 @@ type Props = {
   isRedacting: boolean;
   selectionCount: number;
   toolbarPos: { x: number; y: number };
-  toolbarRef: RefObject<HTMLDivElement | null>;
+  toolbarRef: RefObject<HTMLDivElement>;
   onPickPdf: () => void;
   onApply: () => void;
   onUndo: () => void;

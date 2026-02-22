@@ -4,13 +4,15 @@ import "@/App.css";
 import PDFJsViewer, { ViewerCommand } from "./components/PDFJsViewer";
 import AppToolbar from "./components/AppToolbar";
 import UploadEmptyState from "./components/UploadEmptyState";
+import AppHeader from "./components/AppHeader";
 
 type ViewerFile = string | Uint8Array | ArrayBuffer;
 const MOBILE_BREAKPOINT = 700;
+const HEADER_HEIGHT = 76;
 
 function App() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const toolbarRef = useRef<HTMLDivElement | null>(null);
+  const toolbarRef = useRef<HTMLDivElement>(null);
   const commandNonceRef = useRef(0);
   const dragStateRef = useRef<{
     pointerId: number;
@@ -27,7 +29,7 @@ function App() {
   const [isRedacting, setIsRedacting] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [command, setCommand] = useState<ViewerCommand | null>(null);
-  const [toolbarPos, setToolbarPos] = useState({ x: 20, y: 20 });
+  const [toolbarPos, setToolbarPos] = useState({ x: 20, y: HEADER_HEIGHT + 16 });
 
   useEffect(() => {
     document.body.classList.toggle("theme-dark", isDarkMode);
@@ -66,12 +68,13 @@ function App() {
 
       const liveWidth = Math.ceil(toolbarRef.current?.getBoundingClientRect().width ?? drag.width);
       const liveHeight = Math.ceil(toolbarRef.current?.getBoundingClientRect().height ?? drag.height);
+      const minY = HEADER_HEIGHT + 8;
       const maxX = Math.max(8, window.innerWidth - liveWidth - 40);
-      const maxY = Math.max(8, window.innerHeight - liveHeight - 16);
+      const maxY = Math.max(minY, window.innerHeight - liveHeight - 16);
 
       setToolbarPos({
         x: Math.min(maxX, Math.max(8, rawX)),
-        y: Math.min(maxY, Math.max(8, rawY)),
+        y: Math.min(maxY, Math.max(minY, rawY)),
       });
     };
 
@@ -118,11 +121,12 @@ function App() {
       if (window.innerWidth <= MOBILE_BREAKPOINT) return;
       const width = Math.ceil(toolbarRef.current?.getBoundingClientRect().width ?? 320);
       const height = Math.ceil(toolbarRef.current?.getBoundingClientRect().height ?? 56);
+      const minY = HEADER_HEIGHT + 8;
       const maxX = Math.max(8, window.innerWidth - width - 8);
-      const maxY = Math.max(8, window.innerHeight - height - 8);
+      const maxY = Math.max(minY, window.innerHeight - height - 8);
       setToolbarPos((prev) => ({
         x: Math.min(maxX, Math.max(8, prev.x)),
-        y: Math.min(maxY, Math.max(8, prev.y)),
+        y: Math.min(maxY, Math.max(minY, prev.y)),
       }));
     };
 
@@ -139,6 +143,11 @@ function App() {
         accept="application/pdf"
         onChange={onFileChange}
         style={{ display: "none" }}
+      />
+      <AppHeader
+        title="TrueLocal Redact"
+        tagline="Local-first PDF redaction"
+        githubUrl="https://github.com/tsabkuro/TrueLocal"
       />
 
       {!activeFile ? (

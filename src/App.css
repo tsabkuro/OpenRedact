@@ -42,13 +42,63 @@ body {
   height: 100vh;
 }
 
+.app-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 76px;
+  padding: 0 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 12;
+  background: rgba(255, 255, 255, 0.82);
+  border-bottom: 1px solid rgba(20, 31, 56, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.app-header-brand h1 {
+  margin: 0;
+  font-size: 1.28rem;
+  color: #1f2a44;
+  letter-spacing: 0.02em;
+}
+
+.app-header-brand p {
+  margin: 0.2rem 0 0;
+  font-size: 0.86rem;
+  color: #5b6783;
+}
+
+.app-header-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.25rem;
+  min-width: 2.25rem;
+  padding: 0;
+  border-radius: 999px;
+  text-decoration: none;
+  color: #1f2a44;
+  border: none;
+  background: transparent;
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+.app-header-link:hover {
+  transform: translateY(-1px);
+  opacity: 0.86;
+}
+
 .upload-empty-state {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 4.75rem 1rem 1rem;
 }
 
 .upload-empty-card {
@@ -106,7 +156,7 @@ body {
 
 .pdf-scroll {
   position: absolute;
-  top: 4.5rem;
+  top: 5.5rem;
   bottom: 1.5rem;
   left: 50%;
   transform: translateX(-50%);
@@ -149,6 +199,9 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid rgba(20, 31, 56, 0.18);
+  border-radius: 8px;
+  padding: 0.25rem;
   background: rgba(255, 255, 255, 0.75);
   color: #2f3b56;
   cursor: all-scroll;
@@ -247,6 +300,25 @@ body.theme-dark .pdf-toolbar {
   box-shadow:
     0 10px 30px rgba(2, 6, 23, 0.5),
     0 2px 8px rgba(2, 6, 23, 0.35);
+}
+
+body.theme-dark .app-header {
+  background: rgba(17, 24, 39, 0.82);
+  border-bottom-color: rgba(148, 163, 184, 0.22);
+}
+
+body.theme-dark .app-header-brand h1 {
+  color: #e5e7eb;
+}
+
+body.theme-dark .app-header-brand p {
+  color: #aeb9ce;
+}
+
+body.theme-dark .app-header-link {
+  color: #e5e7eb;
+  border: none;
+  background: transparent;
 }
 
 body.theme-dark .upload-empty-card {
