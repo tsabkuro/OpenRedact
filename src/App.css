@@ -30,6 +30,62 @@
   height: 100vh;
 }
 
+.upload-empty-state {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.upload-empty-card {
+  width: min(560px, 100%);
+  text-align: center;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(20, 31, 56, 0.12);
+  box-shadow:
+    0 16px 42px rgba(16, 24, 40, 0.16),
+    0 3px 12px rgba(16, 24, 40, 0.1);
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+}
+
+.upload-empty-card h1 {
+  margin: 0;
+  color: #1f2a44;
+  font-size: 1.9rem;
+  letter-spacing: 0.01em;
+}
+
+.upload-empty-card p {
+  margin: 0.75rem 0 1.25rem;
+  color: #4a5a7d;
+  font-size: 0.98rem;
+}
+
+.upload-empty-button {
+  min-width: 11rem;
+  appearance: none;
+  border: 1px solid transparent;
+  background: linear-gradient(180deg, #1f4fd8 0%, #173ea9 100%);
+  color: #ffffff;
+  min-height: 2.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(23, 62, 169, 0.35);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.upload-empty-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(23, 62, 169, 0.4);
+}
+
 .pdf-container {
   position: absolute;
   inset: 0;
@@ -179,6 +235,26 @@ body.theme-dark .pdf-toolbar {
   box-shadow:
     0 10px 30px rgba(2, 6, 23, 0.5),
     0 2px 8px rgba(2, 6, 23, 0.35);
+}
+
+body.theme-dark .upload-empty-card {
+  background: rgba(17, 24, 39, 0.88);
+  border-color: rgba(148, 163, 184, 0.25);
+  box-shadow:
+    0 16px 42px rgba(2, 6, 23, 0.5),
+    0 3px 12px rgba(2, 6, 23, 0.35);
+}
+
+body.theme-dark .upload-empty-card h1 {
+  color: #e5e7eb;
+}
+
+body.theme-dark .upload-empty-card p {
+  color: #c0c8d8;
+}
+
+body.theme-dark .upload-empty-button {
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.55);
 }
 
 body.theme-dark .pdf-toolbar .btn-secondary,

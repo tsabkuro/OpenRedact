@@ -1,8 +1,9 @@
 import { ChangeEvent, PointerEvent as ReactPointerEvent, useEffect, useRef, useState } from "react";
 import "@/App.css";
-import { GripVertical } from "lucide-react";
 
 import PDFJsViewer, { ViewerCommand } from "./components/PDFJsViewer";
+import AppToolbar from "./components/AppToolbar";
+import UploadEmptyState from "./components/UploadEmptyState";
 
 type ViewerFile = string | Uint8Array | ArrayBuffer;
 const MOBILE_BREAKPOINT = 700;
@@ -21,7 +22,7 @@ function App() {
     height: number;
   } | null>(null);
 
-  const [activeFile, setActiveFile] = useState<ViewerFile>("/test.pdf");
+  const [activeFile, setActiveFile] = useState<ViewerFile | null>(null);
   const [selectionCount, setSelectionCount] = useState(0);
   const [isRedacting, setIsRedacting] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -130,68 +131,41 @@ function App() {
 
   return (
     <div className="pdf-shell">
-      <div
-        ref={toolbarRef}
-        className="pdf-toolbar"
-        style={{ left: `${toolbarPos.x}px`, top: `${toolbarPos.y}px` }}
-      >
-        <div
-          className="toolbar-handle"
-          onPointerDown={onDragHandlePointerDown}
-          title="Drag toolbar"
-          aria-label="Drag toolbar"
-        >
-          <GripVertical className="toolbar-handle-icon" size={16} strokeWidth={2.1} aria-hidden="true" />
-        </div>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="application/pdf"
-          onChange={onFileChange}
-          style={{ display: "none" }}
-        />
-
-        <button className="btn-secondary" onClick={onPickPdf} disabled={isRedacting}>
-          Upload New PDF
-        </button>
-        <button
-          className="btn-primary"
-          onClick={() => issueCommand("applyRedactions")}
-          disabled={isRedacting || selectionCount === 0}
-        >
-          {isRedacting ? "Applying..." : "Apply Redactions"}
-        </button>
-        <button
-          className="btn-ghost"
-          onClick={() => issueCommand("undoSelection")}
-          disabled={isRedacting || selectionCount === 0}
-        >
-          Undo Selection
-        </button>
-        <button
-          className="btn-danger"
-          onClick={() => issueCommand("clearSelections")}
-          disabled={isRedacting || selectionCount === 0}
-        >
-          Clear Selections
-        </button>
-        <button
-          className="btn-theme"
-          onClick={() => setIsDarkMode((v) => !v)}
-          disabled={isRedacting}
-          aria-pressed={isDarkMode}
-        >
-          {isDarkMode ? "Light Mode" : "Dark Mode"}
-        </button>
-      </div>
-
-      <PDFJsViewer
-        file={activeFile}
-        command={command}
-        onSelectionCountChange={setSelectionCount}
-        onRedactingChange={setIsRedacting}
-        onRedactedFile={setActiveFile}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="application/pdf"
+        onChange={onFileChange}
+        style={{ display: "none" }}
       />
+
+      {!activeFile ? (
+        <UploadEmptyState onPickPdf={onPickPdf} />
+      ) : (
+        <>
+          <AppToolbar
+            isDarkMode={isDarkMode}
+            isRedacting={isRedacting}
+            selectionCount={selectionCount}
+            toolbarPos={toolbarPos}
+            toolbarRef={toolbarRef}
+            onPickPdf={onPickPdf}
+            onApply={() => issueCommand("applyRedactions")}
+            onUndo={() => issueCommand("undoSelection")}
+            onClear={() => issueCommand("clearSelections")}
+            onToggleTheme={() => setIsDarkMode((v) => !v)}
+            onDragHandlePointerDown={onDragHandlePointerDown}
+          />
+
+          <PDFJsViewer
+            file={activeFile}
+            command={command}
+            onSelectionCountChange={setSelectionCount}
+            onRedactingChange={setIsRedacting}
+            onRedactedFile={setActiveFile}
+          />
+        </>
+      )}
     </div>
   );
 }
