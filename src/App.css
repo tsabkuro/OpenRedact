@@ -38,14 +38,13 @@
 
 .pdf-toolbar {
   position: absolute;
-  top: 1.25rem;
-  left: 1.25rem;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0.5rem;
   align-items: center;
   z-index: 10;
-  max-width: calc(100% - 2.5rem);
+  width: max-content;
+  max-width: none;
   background: rgba(255, 255, 255, 0.88);
   border: 1px solid rgba(20, 31, 56, 0.12);
   box-shadow:
@@ -55,6 +54,24 @@
   -webkit-backdrop-filter: blur(8px);
   padding: 0.625rem;
   border-radius: 12px;
+}
+
+.toolbar-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.75);
+  color: #2f3b56;
+  cursor: all-scroll;
+  user-select: none;
+}
+
+.toolbar-handle:active {
+  cursor: all-scroll;
+}
+
+.toolbar-handle-icon {
+  display: block;
 }
 
 .pdf-toolbar button {
@@ -162,6 +179,12 @@ body.theme-dark .pdf-toolbar .btn-theme {
   border-color: #e2e8f0;
 }
 
+body.theme-dark .toolbar-handle {
+  background: rgba(17, 24, 39, 0.9);
+  color: #cbd5e1;
+  border-color: rgba(148, 163, 184, 0.35);
+}
+
 body.theme-dark .pdf-toolbar button:disabled {
   background: #2a3346;
   color: #8c97ad;
@@ -174,7 +197,9 @@ body.theme-dark .pdf-toolbar button:disabled {
     top: 0.75rem;
     left: 0.75rem;
     right: 0.75rem;
-    max-width: none;
+    flex-wrap: wrap;
+    width: auto;
+    max-width: calc(100% - 1.5rem);
   }
 
   .pdf-toolbar button {
