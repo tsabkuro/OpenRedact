@@ -64,8 +64,10 @@ function App() {
       const rawX = drag.originX + dx;
       const rawY = drag.originY + dy;
 
-      const maxX = Math.max(8, window.innerWidth - drag.width - 8);
-      const maxY = Math.max(8, window.innerHeight - drag.height - 8);
+      const liveWidth = Math.ceil(toolbarRef.current?.getBoundingClientRect().width ?? drag.width);
+      const liveHeight = Math.ceil(toolbarRef.current?.getBoundingClientRect().height ?? drag.height);
+      const maxX = Math.max(8, window.innerWidth - liveWidth - 40);
+      const maxY = Math.max(8, window.innerHeight - liveHeight - 16);
 
       setToolbarPos({
         x: Math.min(maxX, Math.max(8, rawX)),
@@ -95,8 +97,8 @@ function App() {
     if (event.button !== 0) return;
     if (window.innerWidth <= MOBILE_BREAKPOINT) return;
 
-    const measuredWidth = toolbarRef.current?.scrollWidth ?? toolbarRef.current?.offsetWidth ?? 400;
-    const measuredHeight = toolbarRef.current?.offsetHeight ?? 56;
+    const measuredWidth = Math.ceil(toolbarRef.current?.getBoundingClientRect().width ?? 400);
+    const measuredHeight = Math.ceil(toolbarRef.current?.getBoundingClientRect().height ?? 56);
 
     dragStateRef.current = {
       pointerId: event.pointerId,
@@ -114,8 +116,8 @@ function App() {
   useEffect(() => {
     const clampToolbarToViewport = () => {
       if (window.innerWidth <= MOBILE_BREAKPOINT) return;
-      const width = toolbarRef.current?.scrollWidth ?? toolbarRef.current?.offsetWidth ?? 320;
-      const height = toolbarRef.current?.offsetHeight ?? 56;
+      const width = Math.ceil(toolbarRef.current?.getBoundingClientRect().width ?? 320);
+      const height = Math.ceil(toolbarRef.current?.getBoundingClientRect().height ?? 56);
       const maxX = Math.max(8, window.innerWidth - width - 8);
       const maxY = Math.max(8, window.innerHeight - height - 8);
       setToolbarPos((prev) => ({
