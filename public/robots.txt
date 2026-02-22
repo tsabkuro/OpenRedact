@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://openredact.com/sitemap.xml

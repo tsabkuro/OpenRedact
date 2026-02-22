@@ -1,10 +1,9 @@
-import { MUPDF_LOADED, type MupdfWorker } from "@/workers/mupdf.worker";
+import { MUPDF_LOADED, RedactionTarget, type MupdfWorker } from "@/workers/mupdf.worker";
 import * as Comlink from "comlink";
 import { Remote } from "comlink";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useMupdf() {
-  const [currentPage, setCurrentPage] = useState(0);
   const [isWorkerInitialized, setIsWorkerInitialized] = useState(false);
   const document = useRef<ArrayBuffer | null>(null);
   const mupdfWorker = useRef<Remote<MupdfWorker>>();
@@ -34,38 +33,17 @@ export function useMupdf() {
     return mupdfWorker.current!.loadDocument(arrayBuffer);
   }, []);
 
-  // ===> Here you can create hooks <===
-  // ===> that use the methods of the worker. <===
-  // ===> You can use useCallback to avoid unnecessary rerenders <===
-
-  const renderPage = useCallback((pageIndex: number) => {
+  const redactPages = useCallback((redactionTargets: RedactionTarget[]) => {
     if (!document.current) {
       throw new Error("Document not loaded");
     }
 
-    setCurrentPage(pageIndex);
-
-    return mupdfWorker.current!.renderPage(
-      pageIndex,
-      (window.devicePixelRatio * 96) / 72
-    );
+    return mupdfWorker.current!.applyRedactions(redactionTargets);
   }, []);
-
-  const countPages = useCallback(() => {
-    if (!document.current) {
-        throw new Error("Document not loaded");
-    }
-    
-    return mupdfWorker.current!.getPageCount();
-  }, []);
-
-  
 
   return {
     isWorkerInitialized,
     loadDocument,
-    renderPage,
-    currentPage,
-    countPages,
+    redactPages,
   };
 }
