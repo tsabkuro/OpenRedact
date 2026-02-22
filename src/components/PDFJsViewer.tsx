@@ -85,8 +85,8 @@ export default function PDFJsViewer({ file }: Props) {
                 const selectionItems: StoredSelection[] = fragmentRects
                     .map((frag) => {
                         const previewRect: CssPageRect = {
-                            x: frag.left - pageBox.left,
-                            y: frag.top - pageBox.top,
+                            x: frag.left - pageBox.left - pageEl.clientLeft,
+                            y: frag.top - pageBox.top - pageEl.clientTop,
                             width: frag.width,
                             height: frag.height,
                         };
