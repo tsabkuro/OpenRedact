@@ -9,6 +9,7 @@ type Props = {
   toolbarPos: { x: number; y: number };
   toolbarRef: RefObject<HTMLDivElement>;
   onPickPdf: () => void;
+  onDownload: () => void;
   onApply: () => void;
   onUndo: () => void;
   onClear: () => void;
@@ -23,6 +24,7 @@ export default function AppToolbar({
   toolbarPos,
   toolbarRef,
   onPickPdf,
+  onDownload,
   onApply,
   onUndo,
   onClear,
@@ -46,6 +48,9 @@ export default function AppToolbar({
 
       <button className="btn-secondary" onClick={onPickPdf} disabled={isRedacting}>
         Upload New PDF
+      </button>
+      <button className="btn-secondary" onClick={onDownload} disabled={isRedacting}>
+        Download PDF
       </button>
       <button
         className="btn-primary"

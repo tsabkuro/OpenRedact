@@ -6,14 +6,22 @@ import AppToolbar from "./components/AppToolbar";
 import UploadEmptyState from "./components/UploadEmptyState";
 import AppHeader from "./components/AppHeader";
 
-type ViewerFile = string | Uint8Array | ArrayBuffer;
+type ViewerFile = string | ArrayBuffer;
 const MOBILE_BREAKPOINT = 700;
 const HEADER_HEIGHT = 76;
+
+function removeSuffix(str: string, suffix: string): string {
+  if (str.endsWith(suffix)) {
+    return str.slice(0, str.length - suffix.length);
+  }
+  return str;
+}
 
 function App() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const toolbarRef = useRef<HTMLDivElement>(null);
   const commandNonceRef = useRef(0);
+  const fileName = useRef<string | null>(null);
   const dragStateRef = useRef<{
     pointerId: number;
     startX: number;
@@ -51,9 +59,48 @@ function App() {
     const picked = event.target.files?.[0];
     if (!picked) return;
 
-    const bytes = new Uint8Array(await picked.arrayBuffer());
-    setActiveFile(bytes);
+    fileName.current = removeSuffix(picked.name, ".pdf");
+    const buffer = await picked.arrayBuffer();
+    setActiveFile(buffer);
     event.target.value = "";
+  };
+
+  const cloneUint8ToArrayBuffer = (bytes: Uint8Array): ArrayBuffer => {
+    const copy = new Uint8Array(bytes.byteLength);
+    copy.set(bytes);
+    return copy.buffer;
+  };
+
+  const getDownloadName = (source: ViewerFile | null) => {
+    if (typeof source === "string" && source.trim().length > 0) {
+      const path = source.split("?")[0];
+      const last = path.split("/").pop() || "";
+      if (last.toLowerCase().endsWith(".pdf")) return last;
+    }
+
+    return fileName.current ? `${fileName.current}-redacted.pdf` : "redacted.pdf";
+  };
+
+  const onDownloadPdf = async () => {
+    if (!activeFile) return;
+
+    let blob: Blob;
+    if (typeof activeFile === "string") {
+      const response = await fetch(activeFile);
+      const data = await response.arrayBuffer();
+      blob = new Blob([data], { type: "application/pdf" });
+    } else {
+      blob = new Blob([activeFile], { type: "application/pdf" });
+    }
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = getDownloadName(activeFile);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
   };
 
   useEffect(() => {
@@ -157,6 +204,7 @@ function App() {
             toolbarPos={toolbarPos}
             toolbarRef={toolbarRef}
             onPickPdf={onPickPdf}
+            onDownload={onDownloadPdf}
             onApply={() => issueCommand("applyRedactions")}
             onUndo={() => issueCommand("undoSelection")}
             onClear={() => issueCommand("clearSelections")}
@@ -169,7 +217,7 @@ function App() {
             command={command}
             onSelectionCountChange={setSelectionCount}
             onRedactingChange={setIsRedacting}
-            onRedactedFile={setActiveFile}
+            onRedactedFile={(bytes) => setActiveFile(cloneUint8ToArrayBuffer(bytes))}
           />
         </>
       )}

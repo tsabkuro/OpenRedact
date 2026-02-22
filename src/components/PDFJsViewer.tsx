@@ -50,6 +50,16 @@ export default function PDFJsViewer({
 
   const { isWorkerInitialized, redactPages, loadDocument } = useMupdf();
 
+  const toClonedPdfJsData = (sourceFile: string | Uint8Array | ArrayBuffer): Uint8Array | null => {
+    if (typeof sourceFile === "string") return null;
+    if (sourceFile instanceof ArrayBuffer) {
+      return new Uint8Array(sourceFile.slice(0));
+    }
+    const copy = new Uint8Array(sourceFile.byteLength);
+    copy.set(sourceFile);
+    return copy;
+  };
+
   useEffect(() => {
     setStoredSelections([]);
   }, [file]);
@@ -170,8 +180,9 @@ export default function PDFJsViewer({
     pdfViewerRef.current = viewer;
     linkService.setViewer(viewer);
 
+    const pdfJsData = toClonedPdfJsData(file);
     const loadingTask = pdfjsLib.getDocument(
-      typeof file === "string" ? { url: file } : { data: file }
+      typeof file === "string" ? { url: file } : { data: pdfJsData! }
     );
 
     (async () => {
@@ -264,7 +275,7 @@ export default function PDFJsViewer({
       }
 
       if (sourceFile instanceof ArrayBuffer) {
-        return sourceFile;
+        return sourceFile.slice(0);
       }
 
       const copy = new Uint8Array(sourceFile.byteLength);
