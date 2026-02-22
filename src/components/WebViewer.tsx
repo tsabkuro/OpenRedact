@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 
 export default function WebViewer(props: { file: string | URL | Request; }) {
 
-    const [docLoaded, setDocLoaded] = useState(false);
+    const [, setDocLoaded] = useState(false);
 
-    const { isWorkerInitialized, renderPage, loadDocument, currentPage, countPages } =
+    const { isWorkerInitialized, renderPage, loadDocument, countPages } =
         useMupdf();
     const [pageImages, setPageImages] = useState<any>([]);
 

@@ -1,11 +1,10 @@
 import "@/App.css";
 
-import WebViewer from '@/components/WebViewer.js';
+// import WebViewer from '@/components/WebViewer.js';
+import PDFJsViewer from "./components/PDFJsViewer";
 
 function App() {
-
-  return <WebViewer file="/test.pdf" />
-
+  return <PDFJsViewer file="/test.pdf" />
 }
 
 export default App;
