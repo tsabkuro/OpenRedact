@@ -11,7 +11,7 @@ import AppHeader from "./components/AppHeader";
 type ViewerFile = string | ArrayBuffer;
 const MOBILE_BREAKPOINT = 700;
 const HEADER_HEIGHT = 76;
-const GITHUB_URL = "https://github.com/tsabkuro/TrueLocal";
+const GITHUB_URL = "https://github.com/tsabkuro/OpenRedact";
 
 function removeSuffix(str: string, suffix: string): string {
   if (str.endsWith(suffix)) {
