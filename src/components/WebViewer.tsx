@@ -5,8 +5,7 @@ export default function WebViewer(props: { file: string | URL | Request; }) {
 
     const [, setDocLoaded] = useState(false);
 
-    const { isWorkerInitialized, renderPage, loadDocument, countPages } =
-        useMupdf();
+    const { isWorkerInitialized, redactPages, loadDocument } = useMupdf();
     const [pageImages, setPageImages] = useState<any>([]);
 
     // ===> This is a demo effect which uses hooks <===

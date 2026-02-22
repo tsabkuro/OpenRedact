@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { pdfjsLib } from "@/lib/pdfjs";
-import { PdfRect, toPdfRectFromSelection } from "@/lib/pdfSelection";
+import { CssPageRect, PdfRect, toPdfRectFromSelection } from "@/lib/pdfSelection";
 
 import {
   EventBus,
@@ -10,12 +10,13 @@ import {
   PDFFindController,
 } from "pdfjs-dist/web/pdf_viewer.mjs";
 import "pdfjs-dist/web/pdf_viewer.css";
+import { useMupdf } from "@/hooks/useMupdf.hook";
+import { RedactionTarget } from "@/workers/mupdf.worker";
 
 
 type StoredSelection = {
   pageNumber: number; // 1-based
   text: string;
-  rect: { x: number; y: number; width: number; height: number };
   pdfRect: PdfRect | null;
   createdAt: number;
 };
@@ -30,12 +31,10 @@ export default function PDFJsViewer({ file }: Props) {
     const viewerRef = useRef<HTMLDivElement | null>(null);
     const pdfViewerRef = useRef<PDFViewer | null>(null);
     const isMouseDown = useRef(false);
-
     const [storedSelections, setStoredSelections] = useState<StoredSelection[]>([]);
+    const [isRedacting, setIsRedacting] = useState(false);
 
-    useEffect(() => {
-        console.log("All stored selections:", storedSelections);
-    }, [storedSelections]);
+    const { isWorkerInitialized, redactPages, loadDocument } = useMupdf();
 
     useEffect(() => {
         const container = containerRef.current;
@@ -74,7 +73,7 @@ export default function PDFJsViewer({ file }: Props) {
                 const r = range.getBoundingClientRect();
                 const pageBox = pageEl.getBoundingClientRect();
 
-                const rect = {
+                const rect: CssPageRect = {
                     x: r.left - pageBox.left,
                     y: r.top - pageBox.top,
                     width: r.width,
@@ -88,12 +87,10 @@ export default function PDFJsViewer({ file }: Props) {
                 const selectionData: StoredSelection = {
                     pageNumber,
                     text,
-                    rect,
                     pdfRect,
                     createdAt: Date.now(),
                 };
 
-                console.log("Selection captured:", selectionData);
                 setStoredSelections((prev) => [...prev, selectionData]);
             });
         };
@@ -154,11 +151,117 @@ export default function PDFJsViewer({ file }: Props) {
         };
     }, [file]);
 
+    useEffect(() => {
+        const viewerRoot = viewerRef.current;
+        if (!viewerRoot) return;
+
+        const overlays = viewerRoot.querySelectorAll<HTMLElement>(".mupdf-debug-overlay");
+        overlays.forEach((el) => el.remove());
+
+        const byPage = new Map<number, StoredSelection[]>();
+        for (const selection of storedSelections) {
+            if (!selection.pdfRect) continue;
+            if (!byPage.has(selection.pageNumber)) {
+                byPage.set(selection.pageNumber, []);
+            }
+            byPage.get(selection.pageNumber)!.push(selection);
+        }
+
+        byPage.forEach((items: StoredSelection[], pageNumber: number) => {
+            const pageEl = viewerRoot.querySelector<HTMLElement>(`.page[data-page-number="${pageNumber}"]`);
+            if (!pageEl) return;
+
+            const overlay = document.createElement("div");
+            overlay.className = "mupdf-debug-overlay";
+            Object.assign(overlay.style, {
+                position: "absolute",
+                inset: "0px",
+                pointerEvents: "none",
+                zIndex: "7",
+            });
+
+            const pageStyle = window.getComputedStyle(pageEl);
+            if (pageStyle.position === "static") {
+                pageEl.style.position = "relative";
+            }
+
+            pageEl.appendChild(overlay);
+        });
+    }, [storedSelections, file]);
+
+    useEffect(() => {
+        if (!isWorkerInitialized) return;
+
+        let cancelled = false;
+
+        const toArrayBuffer = async (file: string | Uint8Array | ArrayBuffer): Promise<ArrayBuffer> => {
+            if (typeof file === "string") {
+                return fetch(file).then((r) => r.arrayBuffer());
+            }
+
+            if (file instanceof ArrayBuffer) {
+                return file;
+            }
+
+            // file is Uint8Array; copy into a new ArrayBuffer
+            const copy = new Uint8Array(file.byteLength);
+            copy.set(file);
+            return copy.buffer;
+        };
+
+        const loadIntoMupdf = async () => {
+            const bytes = await toArrayBuffer(file);
+
+            if (!cancelled) {
+                await loadDocument(bytes);
+            }
+        };
+
+        loadIntoMupdf().catch(console.error);
+
+        return () => {
+            cancelled = true;
+        };
+    }, [file, isWorkerInitialized, loadDocument]);
+
+    const redact = async () => {
+        const targets: RedactionTarget[] = storedSelections
+            .filter((s): s is StoredSelection & { pdfRect: PdfRect } => s.pdfRect !== null)
+            .map((s) => ({
+                pageIndex: s.pageNumber - 1,
+                rect: s.pdfRect,
+            }));
+
+        if (!targets.length) return;
+
+        setIsRedacting(true);
+        try {
+            const redactedBytes = await redactPages(targets);
+            const url = URL.createObjectURL(
+                new Blob([redactedBytes], { type: "application/pdf" })
+            );
+            window.open(url, "_blank");
+        } finally {
+            setIsRedacting(false);
+        }
+    };
+
     return (
         <div className="pdf-shell">
+            <div className="pdf-toolbar">
+                <button onClick={redact} disabled={isRedacting || !storedSelections.length}>
+                    {isRedacting ? "Applying..." : "Apply Redactions"}
+                </button>
+                {!!storedSelections.length && (
+                    <button onClick={() => setStoredSelections([])} disabled={isRedacting}>
+                        Clear Debug Boxes
+                    </button>
+                )}
+            </div>
+
             <div ref={containerRef} className="pdf-container">
                 <div ref={viewerRef} className="pdfViewer" />
             </div>
         </div>
-    )
+    );
 }

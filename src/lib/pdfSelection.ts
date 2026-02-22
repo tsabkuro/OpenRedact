@@ -37,3 +37,4 @@ export function toPdfRectFromSelection(
   if (!pageView || !pageView.viewport) return null;
   return cssRectToPdfRect(pageView, rect);
 }
+
