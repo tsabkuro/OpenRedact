@@ -333,8 +333,12 @@ export default function PDFJsViewer({
   }, [command?.nonce]);
 
   return (
-    <div ref={containerRef} className="pdf-container">
-      <div ref={viewerRef} className="pdfViewer" />
+    <div className="pdf-container">
+      <div ref={containerRef} className="pdf-scroll">
+        <div className="pdf-stage">
+          <div ref={viewerRef} className="pdfViewer" />
+        </div>
+      </div>
     </div>
   );
 }

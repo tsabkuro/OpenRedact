@@ -33,7 +33,28 @@
 .pdf-container {
   position: absolute;
   inset: 0;
+  overflow: hidden;
+}
+
+.pdf-scroll {
+  position: absolute;
+  top: 4.5rem;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100vw - 2rem);
   overflow: auto;
+}
+
+.pdf-stage {
+  width: max-content;
+  max-width: 100%;
+}
+
+.pdf-stage .pdfViewer {
+  width: max-content;
+  margin: 0 auto;
 }
 
 .pdf-toolbar {
