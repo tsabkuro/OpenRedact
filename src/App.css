@@ -348,6 +348,23 @@ body {
   margin: 0 auto;
 }
 
+.redaction-tip {
+  position: absolute;
+  top: 5.8rem;
+  right: 1rem;
+  z-index: 9;
+  max-width: min(320px, calc(100vw - 2rem));
+  padding: 0.55rem 0.7rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  line-height: 1.35;
+  color: #2f4677;
+  background: rgba(237, 243, 255, 0.95);
+  border: 1px solid #cedfff;
+  box-shadow: 0 6px 16px rgba(16, 24, 40, 0.12);
+  pointer-events: none;
+}
+
 .pdf-toolbar {
   position: absolute;
   display: flex;
@@ -473,6 +490,13 @@ body.theme-dark .pdf-toolbar {
   box-shadow:
     0 10px 30px rgba(2, 6, 23, 0.5),
     0 2px 8px rgba(2, 6, 23, 0.35);
+}
+
+body.theme-dark .redaction-tip {
+  color: #d8e2ff;
+  background: rgba(20, 32, 61, 0.94);
+  border-color: #365488;
+  box-shadow: 0 8px 18px rgba(2, 6, 23, 0.35);
 }
 
 body.theme-dark .app-header {
@@ -601,6 +625,15 @@ body.theme-dark .pdf-toolbar button:disabled {
 }
 
 @media (max-width: 700px) {
+  .redaction-tip {
+    top: auto;
+    bottom: 1rem;
+    left: 0.75rem;
+    right: 0.75rem;
+    max-width: none;
+    font-size: 0.76rem;
+  }
+
   .pdf-toolbar {
     top: 0.75rem;
     left: 0.75rem;

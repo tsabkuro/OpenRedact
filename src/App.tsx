@@ -212,6 +212,10 @@ function App() {
         <UploadEmptyState onPickPdf={onPickPdf} githubUrl={GITHUB_URL} />
       ) : (
         <>
+          <aside className="redaction-tip" aria-label="Redaction help">
+            Tip: highlight text in the PDF, then click Apply Redactions.
+          </aside>
+
           <AppToolbar
             isRedacting={isRedacting}
             selectionCount={selectionCount}
