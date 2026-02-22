@@ -72,10 +72,47 @@ body {
   color: #5b6783;
 }
 
+.app-header-home {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
 .app-header-logo {
   display: block;
   width: 186px;
   height: auto;
+}
+
+.app-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.app-header-theme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.25rem;
+  min-width: 2.25rem;
+  padding: 0;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: #1f2a44;
+  cursor: pointer;
+  transition: transform 120ms ease, opacity 120ms ease, color 120ms ease;
+}
+
+.app-header-theme:hover {
+  transform: translateY(-1px);
+  opacity: 0.86;
+}
+
+.app-header-theme.is-active {
+  color: #e6a700;
 }
 
 .app-header-link {
@@ -457,6 +494,14 @@ body.theme-dark .app-header-link {
   color: #e5e7eb;
   border: none;
   background: transparent;
+}
+
+body.theme-dark .app-header-theme {
+  color: #e5e7eb;
+}
+
+body.theme-dark .app-header-theme.is-active {
+  color: #ffd34d;
 }
 
 body.theme-dark .upload-empty-card {

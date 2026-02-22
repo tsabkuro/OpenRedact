@@ -3,7 +3,6 @@ import { GripVertical } from "lucide-react";
 import type { PointerEvent as ReactPointerEvent, RefObject } from "react";
 
 type Props = {
-  isDarkMode: boolean;
   isRedacting: boolean;
   selectionCount: number;
   toolbarPos: { x: number; y: number };
@@ -13,12 +12,10 @@ type Props = {
   onApply: () => void;
   onUndo: () => void;
   onClear: () => void;
-  onToggleTheme: () => void;
   onDragHandlePointerDown: (event: ReactPointerEvent<HTMLDivElement>) => void;
 };
 
 export default function AppToolbar({
-  isDarkMode,
   isRedacting,
   selectionCount,
   toolbarPos,
@@ -28,7 +25,6 @@ export default function AppToolbar({
   onApply,
   onUndo,
   onClear,
-  onToggleTheme,
   onDragHandlePointerDown,
 }: Props) {
   return (
@@ -79,14 +75,6 @@ export default function AppToolbar({
         disabled={isRedacting || selectionCount === 0}
       >
         Clear Selections
-      </button>
-      <button
-        className="btn-theme"
-        onClick={onToggleTheme}
-        disabled={isRedacting}
-        aria-pressed={isDarkMode}
-      >
-        {isDarkMode ? "Light Mode" : "Dark Mode"}
       </button>
     </div>
   );

@@ -56,6 +56,13 @@ function App() {
     fileInputRef.current?.click();
   };
 
+  const onGoHome = () => {
+    setActiveFile(null);
+    setCommand(null);
+    setSelectionCount(0);
+    setIsRedacting(false);
+  };
+
   const onFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const picked = event.target.files?.[0];
     if (!picked) return;
@@ -192,14 +199,18 @@ function App() {
         onChange={onFileChange}
         style={{ display: "none" }}
       />
-      <AppHeader githubUrl={GITHUB_URL} />
+      <AppHeader
+        githubUrl={GITHUB_URL}
+        isDarkMode={isDarkMode}
+        onToggleTheme={() => setIsDarkMode((v) => !v)}
+        onGoHome={onGoHome}
+      />
 
       {!activeFile ? (
         <UploadEmptyState onPickPdf={onPickPdf} githubUrl={GITHUB_URL} />
       ) : (
         <>
           <AppToolbar
-            isDarkMode={isDarkMode}
             isRedacting={isRedacting}
             selectionCount={selectionCount}
             toolbarPos={toolbarPos}
@@ -209,7 +220,6 @@ function App() {
             onApply={() => issueCommand("applyRedactions")}
             onUndo={() => issueCommand("undoSelection")}
             onClear={() => issueCommand("clearSelections")}
-            onToggleTheme={() => setIsDarkMode((v) => !v)}
             onDragHandlePointerDown={onDragHandlePointerDown}
           />
 
