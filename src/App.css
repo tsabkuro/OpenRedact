@@ -72,6 +72,12 @@ body {
   color: #5b6783;
 }
 
+.app-header-logo {
+  display: block;
+  width: 186px;
+  height: auto;
+}
+
 .app-header-link {
   display: inline-flex;
   align-items: center;
@@ -313,6 +319,10 @@ body.theme-dark .app-header-brand h1 {
 
 body.theme-dark .app-header-brand p {
   color: #aeb9ce;
+}
+
+body.theme-dark .app-header-logo {
+  filter: brightness(1.06);
 }
 
 body.theme-dark .app-header-link {

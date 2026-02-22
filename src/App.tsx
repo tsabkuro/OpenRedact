@@ -144,11 +144,7 @@ function App() {
         onChange={onFileChange}
         style={{ display: "none" }}
       />
-      <AppHeader
-        title="TrueLocal Redact"
-        tagline="Local-first PDF redaction"
-        githubUrl="https://github.com/tsabkuro/TrueLocal"
-      />
+      <AppHeader githubUrl="https://github.com/tsabkuro/TrueLocal" />
 
       {!activeFile ? (
         <UploadEmptyState onPickPdf={onPickPdf} />

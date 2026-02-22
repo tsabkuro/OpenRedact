@@ -1,18 +1,16 @@
 import { FaGithub } from "react-icons/fa";
+import OpenRedactLogo from "./OpenRedactLogo";
 
 
 type Props = {
-  title: string;
-  tagline: string;
   githubUrl: string;
 };
 
-export default function AppHeader({ title, tagline, githubUrl }: Props) {
+export default function AppHeader({ githubUrl }: Props) {
   return (
     <header className="app-header">
       <div className="app-header-brand">
-        <h1>{title}</h1>
-        <p>{tagline}</p>
+        <OpenRedactLogo className="app-header-logo" />
       </div>
       <a
         className="app-header-link"

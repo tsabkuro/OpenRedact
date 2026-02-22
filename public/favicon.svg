@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <circle cx="34" cy="32" r="30" fill="#fff" />
+
+  <g transform="translate(7.268 18)">
+    <g transform="translate(19 0)" fill="none">
+      <path d="M0,0H30.464V28H0Z" stroke="none" />
+      <path
+        d="M 3.999994277954102 4 L 3.999994277954102 24 L 26.46404457092285 24 L 26.46404457092285 4 L 3.999994277954102 4 M -5.7220458984375e-06 0 L 30.46404457092285 0 L 30.46404457092285 28 L -5.7220458984375e-06 28 L -5.7220458984375e-06 0 Z"
+        stroke="none"
+        fill="#000"
+      />
+    </g>
+    <text
+      transform="translate(0 22)"
+      fill="#828282"
+      font-size="24"
+      font-family="Arial-BoldMT, Arial"
+      font-weight="700"
+    >
+      <tspan x="0" y="0" fill="#000">O</tspan>
+      <tspan y="0" fill="#fff"> </tspan>
+      <tspan y="0" fill="#828282">R</tspan>
+    </text>
+  </g>
+</svg>
