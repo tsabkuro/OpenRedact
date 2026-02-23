@@ -2,6 +2,7 @@
 
 Open Redact is a privacy-first PDF redaction app that runs entirely in the browser.
 Users can upload a PDF, select text regions, apply permanent redactions, and download the result without sending files to a backend service.
+Try it out at [OpenRedact.com](https://www.openredact.com/)
 
 ## Why Open Redact
 
